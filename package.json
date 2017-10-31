@@ -1,0 +1,20 @@
+{
+  "name": "auth0-evaluation-server",
+  "version": "1.0.0",
+  "description": "# auth0-evaluation-server",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DoubleTap-Consulting/auth0-evaluation-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DoubleTap-Consulting/auth0-evaluation-server/issues"
+  },
+  "homepage": "https://github.com/DoubleTap-Consulting/auth0-evaluation-server#readme"
+}

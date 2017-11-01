@@ -22,6 +22,7 @@
     "express": "^4.16.2",
     "fullcontact-api": "^0.0.3",
     "helmet": "^3.9.0",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.0",
+    "request": "^2.83.0"
   }
 }

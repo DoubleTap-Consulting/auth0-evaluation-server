@@ -7,14 +7,21 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DoubleTap-Consulting/auth0-evaluation-server.git"
-  },
-  "author": "",
+  "repository": "git+https://github.com/DoubleTap-Consulting/auth0-evaluation-server.git",
+  "author": "Michael Mitrakos <mike.mitrakos@verys.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/DoubleTap-Consulting/auth0-evaluation-server/issues"
   },
-  "homepage": "https://github.com/DoubleTap-Consulting/auth0-evaluation-server#readme"
+  "homepage": "https://github.com/DoubleTap-Consulting/auth0-evaluation-server#readme",
+  "dependencies": {
+    "auth0-js": "^8.10.1",
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "fullcontact-api": "^0.0.3",
+    "helmet": "^3.9.0",
+    "morgan": "^1.9.0"
+  }
 }

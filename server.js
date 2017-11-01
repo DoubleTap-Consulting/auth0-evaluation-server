@@ -6,10 +6,6 @@ const logger = require('morgan')
 const helmet = require('helmet')
 const cors = require('cors')
 const PORT = process.env.PORT || 3001
-const webAuth = new auth0.WebAuth({
-  domain: process.env.AUTH0_DOMAIN,
-  clientID: process.env.AUTH0_CLIENT_ID
-});
 
 const rootRouter = require('./routers')
 

@@ -4,7 +4,7 @@ const request = require('request')
 profileController.getUser = (req, res) => {
   var options = {
     method: 'GET',
-    url: `/api/v2/users/${req.headers.userId}`,
+    url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.headers.userId}`,
     headers:
     {
       authorization: process.env.AUTH0_AUTHORIZATION,
@@ -22,7 +22,7 @@ profileController.getUser = (req, res) => {
 profileController.updateUser = (req, res) => {
   var options = {
     method: 'PATCH',
-    url: `/api/v2/users/${req.headers.userId}`,
+    url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.headers.userId}`,
     headers:
     {
       authorization: process.env.AUTH0_AUTHORIZATION,
@@ -40,7 +40,7 @@ profileController.updateUser = (req, res) => {
 profileController.removeUserProvider = (req, res) => {
   var options = {
     method: 'DELETE',
-    url: `/api/v2/users/${req.headers.userId}/identities/${req.body.provider}/${req.headers.userId}`,
+    url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.headers.userId}/identities/${req.body.provider}/${req.headers.userId}`,
     headers:
     {
       authorization: process.env.AUTH0_AUTHORIZATION,
@@ -58,7 +58,7 @@ profileController.removeUserProvider = (req, res) => {
 profileController.linkUser = (req, res) => {
   const options = {
     method: 'POST',
-    url: `/api/v2/users/${req.headers.userId}/identities`,
+    url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.headers.userId}/identities`,
     headers:
     {
       authorization: process.env.AUTH0_AUTHORIZATION,

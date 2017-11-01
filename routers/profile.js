@@ -2,10 +2,12 @@ const profileController = require('../controllers/profile')
 const profileRouter = require('express').Router()
 const request = require("request");
 
-profileRouter.route('/auth/login')
-  .post(profileController.login)
+profileRouter.route('/profile')
+  .get(profileController.getUser)
+  .patch(profileController.updateUser)
 
-profileRouter.route('/auth/suggestedUsers')
-  .get(profileController.suggestedUsers)
+profileRouter.route('/profile/link')
+  .post(profileController.linkUser)
+  .delete(profileController.removeUserProvider)
 
 module.exports = profileRouter

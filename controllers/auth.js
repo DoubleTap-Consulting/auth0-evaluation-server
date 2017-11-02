@@ -1,6 +1,7 @@
 const authController = {}
 const fullcontact = require("fullcontact-api")(process.env.PERSON_API_KEY);
 const request = require('request')
+var fbgraph = require('fbgraphapi');
 
 // Signup route
 authController.signup = (req, res) => {
@@ -51,9 +52,11 @@ authController.getUsers = (req, res) => {
   request(options, function (error, response, body) {
     if (error) throw new Error(error);
 
-    res.status(200).send({
-      data: body
-    })
+    if (error || body.error) {
+      res.status(400).send({ message: body.message, status: body.statusCode })
+    } else {
+      res.status(200).send({ message: "success", status: 200, users: body })
+    }
   });
 }
 
@@ -61,7 +64,59 @@ authController.getUsers = (req, res) => {
 authController.searchPersonApi = (req, res) => {
   fullcontact.person.findByEmail(req.body.email, function (err, json) {
     if (err) throw new Error(err);
-    res.status(200).send({ message: "success", status: 200, user: json })
+
+    var updateOptions = {
+      method: 'PATCH',
+      url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
+      headers: {
+        authorization: process.env.AUTH0_AUTHORIZATION,
+        'content-type': 'application/json'
+      },
+      json: true,
+      body: {
+        user_metadata: {
+          person_api: json
+        }
+      }
+    };
+
+    request(updateOptions, (updateError, updateResponse, updateBody) => {
+      if (updateError || updateBody.error) {
+        res.status(400).send({ message: updateBody.message, status: updateBody.statusCode })
+      } else {
+        res.status(200).send({ message: "success", status: 200, user: updateBody })
+      }
+    });
+  });
+}
+
+authController.searchGraphApi = (req, res) => {
+  var fb = new fbgraph.Facebook(req.body.access_token, 'v2.2');
+  fb.me(function (err, me) {
+    if (err) throw new Error(err);
+
+    var updateOptions = {
+      method: 'PATCH',
+      url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
+      headers: {
+        authorization: process.env.AUTH0_AUTHORIZATION,
+        'content-type': 'application/json'
+      },
+      json: true,
+      body: {
+        user_metadata: {
+          facebook_graph: me
+        }
+      }
+    };
+
+    request(updateOptions, (updateError, updateResponse, updateBody) => {
+      if (updateError || updateBody.error) {
+        res.status(400).send({ message: updateBody.message, status: updateBody.statusCode })
+      } else {
+        res.status(200).send({ message: "success", status: 200, user: updateBody })
+      }
+    });
   });
 }
 

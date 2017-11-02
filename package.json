@@ -20,6 +20,7 @@
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
+    "fbgraphapi": "^0.5.0",
     "fullcontact-api": "^0.0.3",
     "helmet": "^3.9.0",
     "morgan": "^1.9.0",

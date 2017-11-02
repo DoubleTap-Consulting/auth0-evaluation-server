@@ -1,11 +1,13 @@
 const authController = require('../controllers/auth')
 const authRouter = require('express').Router()
-const request = require("request");
 
-authRouter.route('/auth/login')
-    .post(authController.login)
+authRouter.route('/signup')
+    .post(authController.signup)
 
-authRouter.route('/auth/suggestedUsers')
-    .get(authController.suggestedUsers)
+authRouter.route('/searchPersonApi')
+    .post(authController.searchPersonApi)
+
+authRouter.route('/users')
+    .get(authController.getUsers)
 
 module.exports = authRouter

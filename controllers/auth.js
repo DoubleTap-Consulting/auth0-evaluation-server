@@ -1,63 +1,68 @@
 const authController = {}
 const fullcontact = require("fullcontact-api")(process.env.PERSON_API_KEY);
+const request = require('request')
 
-authController.login = (req, res) => {
-  res.status(200).send({
-    message: 'Success'
-  })
+// Signup route
+authController.signup = (req, res) => {
+  var options = {
+    method: 'POST',
+    url: 'https://doubletap-consulting.auth0.com/api/v2/users',
+    headers: {
+      'Authorization': process.env.AUTH0_AUTHORIZATION,
+      'content-type': 'application/json'
+    },
+    body: {
+      user_id: "",
+      connection: process.env.AUTH0_CLIENT_ID,
+      email: "john.doe@gmail.com",
+      username: "johndoe",
+      password: "secret",
+      phone_number: "+199999999999999",
+      user_metadata: {},
+      email_verified: false,
+      verify_email: false,
+      phone_verified: false,
+      app_metadata: {}
+    },
+    json: true
+  };
+
+  request(options, function (error, response, body) {
+    if (error) throw new Error(error);
+
+    res.status(200).send({
+      data: body
+    })
+  });
 }
 
-authController.suggestedUsers = (req, res) => {
-  let suggestedUsers = [];
-  Auth0Client.getUsersWithSameVerifiedEmail(req.user._json)
-    .then(identities => {
-      suggestedUsers = identities;
-    }).catch(err => {
-      console.log('There was an error retrieving users with the same verified email to suggest linking', err);
-    }).then(() => {
-      res.send(suggestedUsers);
-    });
+// Returns a list of all users
+authController.getUsers = (req, res) => {
+  var options = {
+    method: 'GET',
+    url: 'https://doubletap-consulting.auth0.com/api/v2/users',
+    headers: {
+      'Authorization': process.env.AUTH0_AUTHORIZATION,
+      'content-type': 'application/json'
+    },
+    json: true
+  };
+
+  request(options, function (error, response, body) {
+    if (error) throw new Error(error);
+
+    res.status(200).send({
+      data: body
+    })
+  });
 }
 
-authController.gatherPersonApiInfo = (req, res) => {
-  fullcontact.person.findByEmail("email", function (err, json) {
-    //json now contains your information unless err 
+// Returns any data stored within the Person API
+authController.searchPersonApi = (req, res) => {
+  fullcontact.person.findByEmail(req.body.email, function (err, json) {
+    if (err) throw new Error(err);
+    res.status(200).send({ message: "success", status: 200, user: json })
   });
 }
 
 module.exports = authController
-
-
-// var options = { 
-//   method: 'GET',
-//   url: 'https://doubletap-consulting.auth0.com/api/v2/clients',
-//   headers: 
-//    { authorization: process.env.AUTH0_AUTHORIZATION,
-//      'content-type': 'application/json' 
-//    }
-// };
-
-// request(options, (error, response, body) => {
-//   if (error) throw new Error(error);
-
-//   console.log(body);
-// });
-
-
-
-// automates getting new valid token
-// var options = { method: 'POST',
-//   url: 'https://doubletap-consulting.auth0.com/oauth/token',
-//   headers: { 'content-type': 'application/json' },
-//   body: 
-//    { grant_type: 'client_credentials',
-//      client_id: 'kiTTYpqgwQktmJpY_-FY3jKI4eZ1snr0',
-//      client_secret: 'Y8HcWvxkWZES3MOG1PJcvvB7KkgJIY_tHU0O1wiBe-4m6ZInLkfZbPDydIOcNhZT',
-//      audience: 'https://doubletap-consulting.auth0.com/api/v2/' },
-//   json: true };
-
-// request(options, function (error, response, body) {
-//   if (error) throw new Error(error);
-
-//   console.log(body);
-// });

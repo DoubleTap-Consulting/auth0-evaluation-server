@@ -6,7 +6,6 @@ const logger = require('morgan')
 const helmet = require('helmet')
 const cors = require('cors')
 const PORT = process.env.PORT || 3001
-
 const rootRouter = require('./routers')
 
 app.use(logger('dev'))
@@ -14,6 +13,7 @@ app.use(bodyParser.json())
 app.use(helmet())
 app.use(cors());
 
+require('./utils/start')
 app.use('/api', rootRouter)
 
 app.listen(PORT, () => console.log('Double tapping some zombs on port ', PORT))

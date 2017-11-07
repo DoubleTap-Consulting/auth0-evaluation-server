@@ -4,6 +4,7 @@ const request = require('request')
 var fbgraph = require('fbgraphapi');
 
 // Signup route
+// ****** UNUSED ********
 authController.signup = (req, res) => {
   var options = {
     method: 'POST',
@@ -50,8 +51,6 @@ authController.getUsers = (req, res) => {
   };
 
   request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-
     if (error || body.error) {
       res.status(400).send({ message: body.message, status: body.statusCode })
     } else {
@@ -63,7 +62,9 @@ authController.getUsers = (req, res) => {
 // Returns any data stored within the Person API
 authController.searchPersonApi = (req, res) => {
   fullcontact.person.findByEmail(req.body.email, function (err, json) {
-    if (err) throw new Error(err);
+    if (err) {
+      res.status(400).send({ err, message: "failed to find by email", status: 400 })
+    }
 
     var updateOptions = {
       method: 'PATCH',
@@ -93,7 +94,9 @@ authController.searchPersonApi = (req, res) => {
 authController.searchGraphApi = (req, res) => {
   var fb = new fbgraph.Facebook(req.body.access_token, 'v2.2');
   fb.me(function (err, me) {
-    if (err) throw new Error(err);
+    if (err) {
+      res.status(400).send({ err, message: "failed to find", status: 400 })
+    }
 
     var updateOptions = {
       method: 'PATCH',

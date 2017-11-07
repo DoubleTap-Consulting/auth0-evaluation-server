@@ -1,6 +1,7 @@
 const auth0Controller = {}
 const request = require('request')
 
+// ******** UNUSED *********
 auth0Controller.createConnection = (req, res) => {
   var options = {
     method: 'POST',
@@ -26,6 +27,7 @@ auth0Controller.createConnection = (req, res) => {
   });
 }
 
+// ******** UNUSED *********
 auth0Controller.getConnection = (req, res) => {
   var options = {
     method: 'GET',

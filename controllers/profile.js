@@ -72,8 +72,6 @@ profileController.linkUser = (req, res) => {
   };
 
   request(options, (error, response, body) => {
-    if (error) throw new Error(error);
-
     if (error || body.error) {
       res.status(400).send({ message: body.message, status: body.statusCode })
     } else {
@@ -95,8 +93,6 @@ profileController.unlinkUser = (req, res) => {
   };
 
   request(options, (error, response, body) => {
-    if (error) throw new Error(error);
-
     if (error || body.error) {
       res.status(400).send({ message: body.message, status: body.statusCode })
     } else {

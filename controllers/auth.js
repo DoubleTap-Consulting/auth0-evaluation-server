@@ -93,7 +93,7 @@ authController.searchPersonApi = (req, res) => {
 
 authController.searchGraphApi = (req, res) => {
   var fb = new fbgraph.Facebook(req.body.access_token, 'v2.2');
-  fb.me(function (err, me) {
+  fb.me.likes(function (err, me) {
     if (err) {
       res.status(400).send({ err, message: "failed to find", status: 400 })
     }

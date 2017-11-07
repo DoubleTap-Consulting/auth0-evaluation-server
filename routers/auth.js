@@ -11,6 +11,6 @@ authRouter.route('/users')
     .get(authController.getUsers)
 
 authRouter.route('/searchGraphApi/:userid')
-    .post(authController.searchGraphApi)
+    .get(authController.searchGraphApi)
 
 module.exports = authRouter

@@ -1,7 +1,7 @@
 const authController = {}
 const fullcontact = require("fullcontact-api")(process.env.PERSON_API_KEY);
-const request = require('request')
-var fbgraph = require('fbgraphapi');
+const request = require('request-promise')
+const fbgraph = require('fbgraphapi');
 
 // Signup route
 // ****** UNUSED ********
@@ -92,35 +92,51 @@ authController.searchPersonApi = (req, res) => {
 }
 
 authController.searchGraphApi = (req, res) => {
-  var fb = new fbgraph.Facebook(req.body.access_token, 'v2.2');
-  fb.me.likes(function (err, me) {
-    if (err) {
-      res.status(400).send({ err, message: "failed to find", status: 400 })
-    }
+  var options = {
+    method: 'GET',
+    url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
+    headers: {
+      'Authorization': process.env.AUTH0_AUTHORIZATION,
+      'content-type': 'application/json'
+    },
+    json: true
+  };
 
-    var updateOptions = {
-      method: 'PATCH',
-      url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
-      headers: {
-        authorization: process.env.AUTH0_AUTHORIZATION,
-        'content-type': 'application/json'
-      },
-      json: true,
-      body: {
-        user_metadata: {
-          facebook_graph: me
+  request(options, (error, response, body) => {
+    let access_token = body.identities[1].access_token
+    var fb = new fbgraph.Facebook(access_token, 'v2.2');
+    fb.me(function (err, me) {
+      if (err) {
+        console.log('err in fb.me', err)
+        res.status(400).send({ err, message: "failed to find", status: 400 })
+      }
+      console.log('me', me)
+
+      var updateOptions = {
+        method: 'PATCH',
+        url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
+        headers: {
+          authorization: process.env.AUTH0_AUTHORIZATION,
+          'content-type': 'application/json'
+        },
+        json: true,
+        body: {
+          user_metadata: {
+            facebook_graph: me
+          }
         }
-      }
-    };
+      };
 
-    request(updateOptions, (updateError, updateResponse, updateBody) => {
-      if (updateError || updateBody.error) {
-        res.status(400).send({ message: updateBody.message, status: updateBody.statusCode })
-      } else {
-        res.status(200).send({ message: "success", status: 200, user: updateBody })
-      }
+      request(updateOptions, (updateError, updateResponse, updateBody) => {
+        if (updateError || updateBody.error) {
+          res.status(400).send({ message: updateBody.message, status: updateBody.statusCode })
+        } else {
+          res.status(200).send({ message: "success", status: 200, user: updateBody })
+        }
+      });
     });
   });
+
 }
 
 module.exports = authController

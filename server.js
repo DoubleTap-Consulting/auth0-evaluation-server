@@ -13,7 +13,6 @@ app.use(bodyParser.json())
 app.use(helmet())
 app.use(cors());
 
-require('./utils/start')
 app.use('/api', rootRouter)
 
 app.listen(PORT, () => console.log('Double tapping some zombs on port ', PORT))

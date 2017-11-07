@@ -10,4 +10,7 @@ profileRouter.route('/link/:userid')
   .post(profileController.linkUser)
   .delete(profileController.unlinkUser)
 
+profileRouter.route('/link/:userid/potential')
+  .get(profileController.checkPotentialAccountsToLink)
+
 module.exports = profileRouter

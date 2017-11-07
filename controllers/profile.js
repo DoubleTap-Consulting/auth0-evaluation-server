@@ -1,5 +1,6 @@
 const profileController = {}
-const request = require('request')
+const linkAccounts = require('../utils/linkAccounts');
+const request = require('request-promise')
 
 // Returns a single user
 profileController.getUser = (req, res) => {
@@ -20,6 +21,13 @@ profileController.getUser = (req, res) => {
       res.status(200).send({ message: "success", status: 200, user: body })
     }
   });
+}
+
+profileController.checkPotentialAccountsToLink = (req, res) => {
+  linkAccounts.possibleAccountLinkCheck(req.params.userid)
+    .then(status => {
+      res.status(200).send(status)
+    })
 }
 
 // Available properties to update include:

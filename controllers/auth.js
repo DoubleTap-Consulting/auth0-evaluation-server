@@ -92,7 +92,6 @@ authController.searchPersonApi = (req, res) => {
 }
 
 authController.searchGraphApi = (req, res) => {
-  console.log('inside searchGraphApi')
   var options = {
     method: 'GET',
     url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
@@ -104,44 +103,47 @@ authController.searchGraphApi = (req, res) => {
   };
 
   request(options, (error, response, body) => {
-    console.log('inside facebook graph', body)
     if (body.message) {
       res.status(400).send({ error: body.message })
       return;
     }
-    let access_token = body.identities[1].access_token
-    var fb = new fbgraph.Facebook(access_token, 'v2.2');
-    fb.me(function (err, me) {
-      if (err) {
-        console.log('err in fb.me', err)
-        res.status(400).send({ err, message: "failed to find", status: 400 })
-      }
-      console.log('me', me)
-
-      var updateOptions = {
-        method: 'PATCH',
-        url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
-        headers: {
-          authorization: process.env.AUTH0_AUTHORIZATION,
-          'content-type': 'application/json'
-        },
-        json: true,
-        body: {
-          user_metadata: {
-            facebook_graph: me
+    body.identities.forEach(identity => {
+      if (identity.provider === 'facebook') {
+        let access_token = identity.access_token
+        var fb = new fbgraph.Facebook(access_token, 'v2.2');
+        fb.me(function (err, me) {
+          if (err) {
+            console.log('err in fb.me', err)
+            res.status(400).send({ err, message: "failed to find", status: 400 })
           }
-        }
-      };
+          console.log('me', me)
 
-      request(updateOptions, (updateError, updateResponse, updateBody) => {
-        if (updateError || updateBody.error) {
-          console.log('error', updateError, updateBody.error)
-          res.status(400).send({ message: updateBody.message, status: updateBody.statusCode })
-        } else {
-          res.status(200).send({ message: "success", status: 200, user: updateBody })
-        }
-      });
-    });
+          var updateOptions = {
+            method: 'PATCH',
+            url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
+            headers: {
+              authorization: process.env.AUTH0_AUTHORIZATION,
+              'content-type': 'application/json'
+            },
+            json: true,
+            body: {
+              user_metadata: {
+                facebook_graph: me
+              }
+            }
+          };
+
+          request(updateOptions, (updateError, updateResponse, updateBody) => {
+            if (updateError || updateBody.error) {
+              console.log('error', updateError, updateBody.error)
+              res.status(400).send({ message: updateBody.message, status: updateBody.statusCode })
+            } else {
+              res.status(200).send({ message: "success", status: 200, user: updateBody })
+            }
+          });
+        });
+      }
+    })
   });
 
 }

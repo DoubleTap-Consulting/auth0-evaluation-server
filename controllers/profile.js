@@ -1,6 +1,7 @@
 const profileController = {}
 const linkAccounts = require('../utils/linkAccounts');
 const request = require('request-promise')
+const _ = require('lodash')
 
 // Returns a single user
 profileController.getUser = (req, res) => {
@@ -125,9 +126,10 @@ profileController.addFavorite = (req, res) => {
     if (error || userBody.error) {
       res.status(400).send({ message: userBody.message, status: userBody.statusCode })
     } else {
-      let updatedFavorites = []
+      let updatedFavorites;
       if (userBody.user_metadata.favorite_pizzas) {
-        updatedFavorites = userBody.user_metadata.favorite_pizzas.push(pizzaId)
+        userBody.user_metadata.favorite_pizzas.push(pizzaId)
+        updatedFavorites = userBody.user_metadata.favorite_pizzas
       } else {
         updatedFavorites = [pizzaId]
       }
@@ -146,6 +148,53 @@ profileController.addFavorite = (req, res) => {
         }
       };
 
+      request(options, (error, response, body) => {
+        if (error || body.error) {
+          res.status(400).send({ message: body.message, status: body.statusCode })
+        } else {
+          res.status(200).send({ message: "success", status: 200, user: body })
+        }
+      });
+    }
+  });
+}
+
+profileController.removeFavorite = (req, res) => {
+  let pizzaId = req.body.pizzaId
+  var getOptions = {
+    method: 'GET',
+    url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
+    headers: {
+      'Authorization': process.env.AUTH0_AUTHORIZATION,
+      'content-type': 'application/json'
+    },
+    json: true
+  };
+
+  request(getOptions, (error, response, userBody) => {
+    if (error || userBody.error) {
+      res.status(400).send({ message: userBody.message, status: userBody.statusCode })
+    } else {
+      let updatedFavorites = userBody.user_metadata.favorite_pizzas
+      for (var i = 0; i < updatedFavorites.length; i++) {
+        if (updatedFavorites[i] === pizzaId) {
+          updatedFavorites.splice(i, 1)
+        }
+      }
+      var options = {
+        method: 'PATCH',
+        url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
+        headers: {
+          authorization: process.env.AUTH0_AUTHORIZATION,
+          'content-type': 'application/json'
+        },
+        json: true,
+        body: {
+          user_metadata: {
+            favorite_pizzas: updatedFavorites
+          }
+        }
+      };
       request(options, (error, response, body) => {
         if (error || body.error) {
           res.status(400).send({ message: body.message, status: body.statusCode })

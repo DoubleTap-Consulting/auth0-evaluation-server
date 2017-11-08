@@ -15,5 +15,6 @@ profileRouter.route('/link/:userid/potential')
 
 profileRouter.route('/favorites/:userid')
   .post(profileController.addFavorite)
+  .delete(profileController.removeFavorite)
 
 module.exports = profileRouter

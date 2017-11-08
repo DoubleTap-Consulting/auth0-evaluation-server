@@ -109,4 +109,52 @@ profileController.unlinkUser = (req, res) => {
   });
 }
 
+profileController.addFavorite = (req, res) => {
+  let pizzaId = req.body.pizzaId
+  var getOptions = {
+    method: 'GET',
+    url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
+    headers: {
+      'Authorization': process.env.AUTH0_AUTHORIZATION,
+      'content-type': 'application/json'
+    },
+    json: true
+  };
+
+  request(getOptions, (error, response, userBody) => {
+    if (error || userBody.error) {
+      res.status(400).send({ message: userBody.message, status: userBody.statusCode })
+    } else {
+      let updatedFavorites = []
+      if (userBody.user_metadata.favorite_pizzas) {
+        updatedFavorites = userBody.user_metadata.favorite_pizzas.push(pizzaId)
+      } else {
+        updatedFavorites = [pizzaId]
+      }
+      var options = {
+        method: 'PATCH',
+        url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
+        headers: {
+          authorization: process.env.AUTH0_AUTHORIZATION,
+          'content-type': 'application/json'
+        },
+        json: true,
+        body: {
+          user_metadata: {
+            favorite_pizzas: updatedFavorites
+          }
+        }
+      };
+
+      request(options, (error, response, body) => {
+        if (error || body.error) {
+          res.status(400).send({ message: body.message, status: body.statusCode })
+        } else {
+          res.status(200).send({ message: "success", status: 200, user: body })
+        }
+      });
+    }
+  });
+}
+
 module.exports = profileController

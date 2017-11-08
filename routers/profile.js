@@ -13,4 +13,7 @@ profileRouter.route('/link/:userid')
 profileRouter.route('/link/:userid/potential')
   .get(profileController.checkPotentialAccountsToLink)
 
+profileRouter.route('/favorites/:userid')
+  .post(profileController.addFavorite)
+
 module.exports = profileRouter

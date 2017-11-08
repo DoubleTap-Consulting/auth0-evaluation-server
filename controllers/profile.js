@@ -127,7 +127,7 @@ profileController.addFavorite = (req, res) => {
       res.status(400).send({ message: userBody.message, status: userBody.statusCode })
     } else {
       let updatedFavorites;
-      if (userBody.user_metadata.favorite_pizzas) {
+      if (userBody.user_metadata && userBody.user_metadata.favorite_pizzas) {
         userBody.user_metadata.favorite_pizzas.push(pizzaId)
         updatedFavorites = userBody.user_metadata.favorite_pizzas
       } else {

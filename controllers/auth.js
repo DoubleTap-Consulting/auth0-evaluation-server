@@ -92,6 +92,7 @@ authController.searchPersonApi = (req, res) => {
 }
 
 authController.searchGraphApi = (req, res) => {
+  console.log('inside searchGraphApi')
   var options = {
     method: 'GET',
     url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}`,
@@ -103,7 +104,12 @@ authController.searchGraphApi = (req, res) => {
   };
 
   request(options, (error, response, body) => {
-    console.log('inside facebook graph')
+    console.log('inside facebook graph', body)
+    if (body.message) {
+      res.status(400).send({ error: body.message })
+      return;
+    }
+    let access_token = body.identities[1].access_token
     var fb = new fbgraph.Facebook(access_token, 'v2.2');
     fb.me(function (err, me) {
       if (err) {

@@ -103,7 +103,6 @@ authController.searchGraphApi = (req, res) => {
   };
 
   request(options, (error, response, body) => {
-    let access_token = body.identities[1].access_token
     var fb = new fbgraph.Facebook(access_token, 'v2.2');
     fb.me(function (err, me) {
       if (err) {
@@ -129,6 +128,7 @@ authController.searchGraphApi = (req, res) => {
 
       request(updateOptions, (updateError, updateResponse, updateBody) => {
         if (updateError || updateBody.error) {
+          console.log('error', updateError, updateBody.error)
           res.status(400).send({ message: updateBody.message, status: updateBody.statusCode })
         } else {
           res.status(200).send({ message: "success", status: 200, user: updateBody })

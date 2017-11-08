@@ -103,6 +103,7 @@ authController.searchGraphApi = (req, res) => {
   };
 
   request(options, (error, response, body) => {
+    console.log('inside facebook graph')
     var fb = new fbgraph.Facebook(access_token, 'v2.2');
     fb.me(function (err, me) {
       if (err) {

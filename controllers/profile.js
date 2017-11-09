@@ -91,7 +91,7 @@ profileController.linkUser = (req, res) => {
 
 // Unlinks two user accounts
 profileController.unlinkUser = (req, res) => {
-  console.log('inside unlink with secondaryProvider: ', req.body.secondaryProvider, ' for user ', req.params.userid)
+  console.log('inside unlink with secondaryProvider: ', req.body.secondaryProvider, ' and secondaryUserid of ', req.body.secondaryUserid, 'for user ', req.params.userid)
   const options = {
     method: 'DELETE',
     url: `https://doubletap-consulting.auth0.com/api/v2/users/${req.params.userid}/identities/${req.body.secondaryProvider}/${req.body.secondaryUserid}`,
